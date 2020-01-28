@@ -7,11 +7,23 @@ const alienHome = {
     canvasDom: undefined,
     ctx: undefined,
     fpsCounter: 60,
+    score: undefined,
+    framesCounter: 0,
     canvas: undefined,
     wSize: {
-        width: 900,
-        height: 700,
+        width: 1200,
+        height: 800,
     },
+    keys: {
+        TOP_KEY: 38,
+        BOTTOM_KEY: 40,
+        LEFT_KEY: 37,
+        RIGHT_KEY: 39,
+        SPACE: 32
+    },
+    enemies: [],
+
+
 
     init(id) {
         this.canvasDom = document.getElementById(id)
@@ -28,46 +40,60 @@ const alienHome = {
             this.clear()
             this.drawAll()
             this.moveAll()
-            // this.generateObstacles()
-            // this.clearObstacles()
-            // this.isCollision()
-            // if (this.isCollision()) {
-            //     this.gameOver();
-            // }
-            // this.score += 0.01;
-            // this.drawScore();
+            this.generateEnemies();
+            this.clearEnemies();
         }, 1000 / this.fpsCounter)
 
     },
 
     reset() {
-
         this.background = new Background(this.ctx, this.wSize.width, this.wSize.height)
-        //this.player = new Player(this.ctx, this.wSize.width, this.wSize.height);
-
+        this.floor = new Floor(this.ctx, this.wSize.width, this.wSize.height)
+        this.player1 = new Player(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
+        this.enemy1 = new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
     },
 
     drawAll() {
-
         this.background.draw();
-        //this.player.draw(this.framesCounter);
+        this.floor.draw();
+        this.player1.draw(this.framesCounter);
+        this.enemies.forEach(ene => ene.draw(this.framesCounter));
+        ;
 
     },
 
     moveAll() {
-        this.background.move();
-        //this.player.move();
-
+        //this.background.move();
+        this.enemies.forEach(ene => ene.move());
+        this.player1.jump(this.framesCounter);
     },
 
     clear() {
         this.ctx.clearRect(0, 0, this.wSize.width, this.wSize.height);
     },
 
+    generateEnemies() {
+        if (this.framesCounter % 400 == 0) {
+            //Generamos obstaculos cada 400 frames.
+            this.enemies.push(new Enemy(this.ctx, this.wSize.width, this.wSize.height)); //pusheamos nuevos obstaculos
+        }
+    },
+
+    clearEnemies() {
+        //funcion para limpiar obs
+        this.enemies.forEach((ene, idx) => {
+            if (ene.posX <= -200) {
+                this.enemies.splice(idx, 1);
+            }
+        });
+    },
+
     gameOver() {
         //Gameover detiene el juego.
         clearInterval(this.interval);
     },
+
+
 
 
 

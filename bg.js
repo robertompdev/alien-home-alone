@@ -1,5 +1,5 @@
 class Background {
-    constructor(ctx, w, h) {
+    constructor(ctx, w, h, keys) {
         this.ctx = ctx;
         this.width = w;
         this.height = h;
@@ -10,7 +10,8 @@ class Background {
         this.posX = 0
         this.posY = 0
 
-        this.velX = 3
+        this.velX = 1
+        this.keys = keys;
     }
 
 
@@ -24,5 +25,20 @@ class Background {
     move() {
         this.posX -= this.velX
         if (this.posX <= -this.width) { this.posX = 0 }
+    }
+
+    setListeners() {
+        document.onkeydown = e => {
+            switch (e.keyCode) {
+
+                case this.keys.RIGHT_KEY:
+                    this.move();
+                    break;
+
+                default:
+                    break;
+
+            }
+        };
     }
 }
