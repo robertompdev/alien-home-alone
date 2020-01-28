@@ -74,6 +74,27 @@ class Player {
         //this.bullets.forEach(bullet => bullet.move()); //Movemos las balas
     }
 
+    // jumpOnPlatform() {
+    //     let gravity = 0.7;
+
+    //     if (this.posY <= this.posY0 + 200) {
+
+    //         //Comprobamos que el player nunca sobrepase el suelo.
+
+    //         this.posY += this.velY;
+    //         this.velY += gravity;
+
+    //     } else {
+    //         //Si lo hace reseteamos posición y velocidad
+    //         this.velY = 1;
+    //         this.posY = this.posY0;
+    //     }
+
+    //     //this.bullets.forEach(bullet => bullet.move()); //Movemos las balas
+    // }
+
+
+
     animate(framesCounter) {
         if (framesCounter % 20 === 0) {
             this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
@@ -88,7 +109,7 @@ class Player {
 
     }
 
-    setListeners() {
+    setListeners(isOnPlatform) {
         document.addEventListener("keydown", e => {
             if (e.keyCode === this.keys.TOP_KEY) {
 

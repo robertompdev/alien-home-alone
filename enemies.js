@@ -55,8 +55,10 @@ class Enemy {
                 this.image.framesIndex = 0
             }
         }
-        if (framesCounter % 100 === 0) {
+        if (framesCounter % 80 === 0) {
+
             this.shoot()
+
         }
 
     }

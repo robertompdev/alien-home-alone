@@ -36,7 +36,6 @@ const alienHome = {
         this.reset()
         this.interval = setInterval(() => {
             this.framesCounter++;
-            console.log(this.player1.acids[0])
             this.clear()
             this.drawAll()
             this.moveAll()
@@ -57,8 +56,12 @@ const alienHome = {
                 }
 
             };
+            if (this.platforms.length != 0) {
+                if (this.isOnPlatform()) {
+                    this.player1.posY = this.platforms[0].posY - this.player1.height + 50
+                }
+            }
 
-            //this.enemies.forEach(bullet => console.log(bullet))
         }, 1000 / this.fpsCounter)
     },
 
@@ -107,7 +110,7 @@ const alienHome = {
     },
 
     generatePlatforms() {
-        if (this.framesCounter % 350 == 0) {
+        if (this.framesCounter % 200 == 0) {
             this.platforms.push(new Platform(this.ctx)); //pusheamos nuevos obstaculos
         }
     },
@@ -126,7 +129,7 @@ const alienHome = {
         return this.enemies[0].bullets.some(
             eachBullet =>
                 this.player1.posX + this.player1.width - 40 >= eachBullet.posX
-                && this.player1.posY + this.player1.height >= eachBullet.posY
+                && this.player1.posY + this.player1.height - 50 >= eachBullet.posY
                 && this.player1.posX + 40 <= eachBullet.posX + eachBullet.width
         )
         //fin del juego, detenemos intervalo
@@ -135,8 +138,21 @@ const alienHome = {
     isDeadEnemy() {
         return this.player1.acids.some(
             eachAcid =>
-                this.enemies[0].posX <= eachAcid.posX
+                this.enemies[0].posX <= eachAcid.posX && this.enemies[0].posY <= eachAcid.posY
         )
+
+    },
+
+    isOnPlatform() {
+
+        if (this.player1.posX + this.player1.width >= this.platforms[0].posX && this.player1.posX <= this.platforms[0].posX + this.platforms[0].width && this.player1.posY + 200 <= this.platforms[0].posY) {
+            return true
+        }
+        // 
+        // )
+
+
+
 
     },
 
