@@ -5,9 +5,9 @@ class Player {
         this.gameHeight = h;
 
         this.image = new Image();
-        this.image.src = 'images/player1.gif';
+        this.image.src = 'images/playerbasic.gif';
 
-        this.width = 280;
+        this.width = 300;
         this.height = 280;
 
         this.posX = 80;
@@ -15,7 +15,7 @@ class Player {
         this.posY = this.gameHeight * 0.98 - this.height;
         this.velY = 120;
 
-        this.image.frames = 5; //Indicamos el numero de frames que tiene la imagen
+        this.image.frames = 3; //Indicamos el numero de frames que tiene la imagen
         this.image.framesIndex = 0; //Frame actual menos 1, lo usaremos para recortar la imagen en drawImage
         this.keys = keys;
 
@@ -25,22 +25,22 @@ class Player {
     }
 
     draw(framesCounter) {
-        let zeroDieB = 0
-        let zeroDieA = 0
-        if (this.posY >= this.posY0) {
-            zeroDieB = this.image.height - 470;
-            zeroDieA = 0;
-        } else {
-            zeroDieB = this.image.height - 470; //Punto y donde termina de recortar
-            zeroDieA = 240;
-        };
+        // let zeroDieB = 0
+        // let zeroDieA = 0
+        // if (this.posY >= this.posY0) {
+        //     zeroDieB = this.image.height - 240;
+        //     zeroDieA = 0;
+        // } else {
+        //     zeroDieB = this.image.height - 240; //Punto y donde termina de recortar
+        //     zeroDieA = 120;
+        // };
 
         this.ctx.drawImage(
             this.image,
             this.image.framesIndex * Math.floor(this.image.width / this.image.frames), //Punto x donde empieza a recortar
-            zeroDieA, //Punto y donde empieza a recortar
+            0, //Punto y donde empieza a recortar
             Math.floor(this.image.width / this.image.frames), //Punto x donde termina de recortar
-            zeroDieB,
+            120,
             this.posX,
             this.posY,
             this.width,

@@ -5,10 +5,9 @@ class Platform {
         this.posY = 470;
         this.image = new Image();
         this.image.src = 'images/platform.gif';
-        this.width = 300;
+        this.width = 400;
         this.height = 60;
         this.velX = 4;
-        // this.framescounter = framescounter;
 
     }
 

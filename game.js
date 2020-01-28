@@ -24,6 +24,8 @@ const alienHome = {
     enemies: [],
     platforms: [],
 
+    ///////////////MÉTODOS/////////////
+    //-------------INICIAMOS EL CANVAS-------------//
     init(id) {
         this.canvasDom = document.getElementById(id)
         this.ctx = this.canvasDom.getContext('2d')
@@ -32,6 +34,7 @@ const alienHome = {
         this.startGame()
     },
 
+    //-------------INICIAMOS EL JUEGO-------------//
     startGame() {
         this.reset()
         this.interval = setInterval(() => {
@@ -56,15 +59,13 @@ const alienHome = {
                 }
 
             };
-            if (this.platforms.length != 0) {
-                if (this.isOnPlatform()) {
-                    this.player1.posY = this.platforms[0].posY - this.player1.height + 50
-                }
-            }
+            this.isOnPlatform();
 
         }, 1000 / this.fpsCounter)
     },
 
+
+    //-------------RESET GMAE-------------//
     reset() {
         this.background = new Background(this.ctx, this.wSize.width, this.wSize.height)
         this.floor = new Floor(this.ctx, this.wSize.width, this.wSize.height)
@@ -72,6 +73,7 @@ const alienHome = {
         this.enemy1 = new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
         this.platform = new Platform(this.ctx, this.framesCounter);
     },
+
 
     drawAll() {
         this.background.draw();
@@ -140,16 +142,35 @@ const alienHome = {
             eachAcid =>
                 this.enemies[0].posX <= eachAcid.posX && this.enemies[0].posY <= eachAcid.posY
         )
-
     },
 
     isOnPlatform() {
 
-        if (this.player1.posX + this.player1.width >= this.platforms[0].posX && this.player1.posX <= this.platforms[0].posX + this.platforms[0].width && this.player1.posY + 200 <= this.platforms[0].posY) {
-            return true
-        }
+        // if (this.player1.posX + this.player1.width >= this.platforms[0].posX && this.player1.posX <= this.platforms[0].posX + this.platforms[0].width && this.player1.posY + 200 <= this.platforms[0].posY) {
+        //     return true
+        // }
         // 
         // )
+
+        let collision = this.platforms.find(obs => {
+            return (
+                this.player1.posX + this.player1.width >= obs.posX &&
+                this.player1.posY + this.player1.height >= obs.posY &&
+                this.player1.posX <= obs.posX + obs.width - 120 &&
+                this.player1.posY + this.player1.height <= obs.posY + obs.height &&
+                this.player1.velY > 0
+            )
+        })
+
+        if (collision) {
+            this.player1.obj = collision
+            this.player1.posY0 = collision.posY - this.player1.height
+            this.player1.posY = this.player1.posY0 + 60
+            console.log(this.player1.posY0)
+
+        } else {
+            this.player1.posY0 = this.wSize.height - this.player1.height
+        }
 
 
 
