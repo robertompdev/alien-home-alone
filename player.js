@@ -1,5 +1,5 @@
 class Player {
-    constructor(ctx, w, h, keys, background, floor) {
+    constructor(ctx, w, h, keys) {
         this.ctx = ctx;
         this.gameWidth = w;
         this.gameHeight = h;
@@ -13,16 +13,14 @@ class Player {
         this.posX = 80;
         this.posY0 = this.gameHeight * 0.98 - this.height; //Guardamos la posicion original para usarla como suelo
         this.posY = this.gameHeight * 0.98 - this.height;
-        this.velY = 1;
+        this.velY = 120;
 
         this.image.frames = 5; //Indicamos el numero de frames que tiene la imagen
         this.image.framesIndex = 0; //Frame actual menos 1, lo usaremos para recortar la imagen en drawImage
-
         this.keys = keys;
-        this.movingRight = false
 
-        this.background = background
-        this.floor = floor
+        this.acids = [];
+
         this.setListeners();
     }
 
@@ -49,6 +47,8 @@ class Player {
             this.height
         );
         this.animate(framesCounter);
+        this.acids.forEach(acids => acids.draw());
+        this.acids.forEach(acids => acids.move());
 
         //Funcion que anima los frames.
 
@@ -56,7 +56,7 @@ class Player {
     }
 
     jump() {
-        let gravity = 0.5;
+        let gravity = 0.7;
 
         if (this.posY <= this.posY0) {
 
@@ -75,20 +75,17 @@ class Player {
     }
 
     animate(framesCounter) {
-        console.log("entro", this.movingRight)
-        if (this.movingRight) {
-
-            if (framesCounter % 24 === 0) {
-                this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
-                if (this.posY === this.posY0) {
-                    if (this.image.framesIndex > 2) {
-                        this.image.framesIndex = 0;
-                    }
-                } else {
-                    this.image.framesIndex = 0
-                }
+        if (framesCounter % 20 === 0) {
+            this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
+            //if (this.posY === this.posY0) {
+            if (this.image.framesIndex > 2) {
+                this.image.framesIndex = 0;
             }
+            // } else {
+            //   this.image.framesIndex = 0
+            //}
         }
+
     }
 
     setListeners() {
@@ -100,21 +97,19 @@ class Player {
                     this.posY -= 40; //Añadimos algo de velocidad al salto para generar el efecto de suavidad y que la gravedad no tire directamente de él
                     this.velY -= 20;
                 }
-            } else if (e.keyCode === this.keys.RIGHT_KEY) {
-                console.log("entro tecla")
-                this.movingRight = true
-                this.background.move()
-                this.floor.move()
+
             } else if (e.keyCode === this.keys.SPACE) {
-            } else {
-                this.movingRight = false
+                this.shoot();
+
             }
         });
 
-        document.addEventListener("keyup", e => {
-            if (e.keyCode == this.keys.RIGHT_KEY) {
-                this.movingRight = false
-            }
-        });
+    }
+
+    shoot() {
+
+        //Instanciamos nuevas balas
+        this.acids.push(new Acid(this.ctx, this.posX, this.posY, this.posY0, this.height));
+
     }
 }

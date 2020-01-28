@@ -1,5 +1,5 @@
 class Background {
-    constructor(ctx, w, h, keys) {
+    constructor(ctx, w, h) {
         this.ctx = ctx;
         this.width = w;
         this.height = h;
@@ -11,7 +11,7 @@ class Background {
         this.posY = 0
 
         this.velX = 1
-        this.keys = keys;
+
     }
 
 
@@ -27,18 +27,18 @@ class Background {
         if (this.posX <= -this.width) { this.posX = 0 }
     }
 
-    setListeners() {
-        document.onkeydown = e => {
-            switch (e.keyCode) {
+    // setListeners() {
+    //     document.onkeydown = e => {
+    //         switch (e.keyCode) {
 
-                case this.keys.RIGHT_KEY:
-                    this.move();
-                    break;
+    //             case this.keys.RIGHT_KEY:
+    //                 this.move();
+    //                 break;
 
-                default:
-                    break;
+    //             default:
+    //                 break;
 
-            }
-        };
-    }
+    //         }
+    //     };
+    // }
 }

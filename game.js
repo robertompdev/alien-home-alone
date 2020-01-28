@@ -22,8 +22,7 @@ const alienHome = {
         SPACE: 32
     },
     enemies: [],
-
-
+    platforms: [],
 
     init(id) {
         this.canvasDom = document.getElementById(id)
@@ -37,13 +36,30 @@ const alienHome = {
         this.reset()
         this.interval = setInterval(() => {
             this.framesCounter++;
+            console.log(this.player1.acids[0])
             this.clear()
             this.drawAll()
             this.moveAll()
             this.generateEnemies();
             this.clearEnemies();
-        }, 1000 / this.fpsCounter)
+            this.generatePlatforms();
+            this.clearPlatforms();
+            if (this.player1.acids.length != 0 && this.enemies.length != 0) {
+                if (this.isDeadEnemy()) {
+                    this.enemies.splice(0, 1)
+                    this.player1.acids.splice(0, 1)
+                }
+            }
+            if (this.enemies.length != 0) {
 
+                if (this.isCollision()) {
+                    this.gameOver();
+                }
+
+            };
+
+            //this.enemies.forEach(bullet => console.log(bullet))
+        }, 1000 / this.fpsCounter)
     },
 
     reset() {
@@ -51,21 +67,25 @@ const alienHome = {
         this.floor = new Floor(this.ctx, this.wSize.width, this.wSize.height)
         this.player1 = new Player(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
         this.enemy1 = new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
+        this.platform = new Platform(this.ctx, this.framesCounter);
     },
 
     drawAll() {
         this.background.draw();
         this.floor.draw();
+        this.platform.draw();
+        this.platforms.forEach(plat => plat.draw(this.framesCounter));
         this.player1.draw(this.framesCounter);
         this.enemies.forEach(ene => ene.draw(this.framesCounter));
-        ;
-
     },
 
     moveAll() {
-        //this.background.move();
         this.enemies.forEach(ene => ene.move());
         this.player1.jump(this.framesCounter);
+        this.background.move()
+        this.floor.move()
+        this.player1.animate()
+        this.platforms.forEach(plat => plat.move());
     },
 
     clear() {
@@ -74,13 +94,11 @@ const alienHome = {
 
     generateEnemies() {
         if (this.framesCounter % 400 == 0) {
-            //Generamos obstaculos cada 400 frames.
-            this.enemies.push(new Enemy(this.ctx, this.wSize.width, this.wSize.height)); //pusheamos nuevos obstaculos
+            this.enemies.push(new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.player1)); //pusheamos nuevos obstaculos
         }
     },
 
     clearEnemies() {
-        //funcion para limpiar obs
         this.enemies.forEach((ene, idx) => {
             if (ene.posX <= -200) {
                 this.enemies.splice(idx, 1);
@@ -88,9 +106,46 @@ const alienHome = {
         });
     },
 
+    generatePlatforms() {
+        if (this.framesCounter % 350 == 0) {
+            this.platforms.push(new Platform(this.ctx)); //pusheamos nuevos obstaculos
+        }
+    },
+
+    clearPlatforms() {
+        this.platforms.forEach((plat, idx) => {
+            if (plat.posX <= -500) {
+                this.platforms.splice(idx, 1);
+            }
+        });
+    },
+
+    isCollision() {
+        // funcion para comprobar colisiones
+
+        return this.enemies[0].bullets.some(
+            eachBullet =>
+                this.player1.posX + this.player1.width - 40 >= eachBullet.posX
+                && this.player1.posY + this.player1.height >= eachBullet.posY
+                && this.player1.posX + 40 <= eachBullet.posX + eachBullet.width
+        )
+        //fin del juego, detenemos intervalo
+    },
+
+    isDeadEnemy() {
+        return this.player1.acids.some(
+            eachAcid =>
+                this.enemies[0].posX <= eachAcid.posX
+        )
+
+    },
+
+
+
     gameOver() {
         //Gameover detiene el juego.
         clearInterval(this.interval);
+
     },
 
 
