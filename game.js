@@ -24,6 +24,12 @@ const alienHome = {
     enemies: [],
     platforms: [],
     life: [],
+    ost: new Audio("music/ost.mp3"),
+    scream: new Audio("sound_fx/wilhelm-scream-gaming-sound-effect-hd.mp3"),
+    grunt: new Audio("sound_fx/zapsplat_animals_bear_grunt_002_17144.mp3"),
+    gameOverSound: new Audio("sound_fx/zapsplat_multimedia_male_voice_processed_says_game_over_002_23669.mp3"),
+    gameOverScreenMsg: GameOverScreen,
+
 
     //////////////////--MÉTODOS--////////////////////
     //-------------INICIAMOS EL CANVAS-------------//
@@ -32,14 +38,19 @@ const alienHome = {
         this.ctx = this.canvasDom.getContext('2d')
         this.canvasDom.width = this.wSize.width
         this.canvasDom.height = this.wSize.height
-        this.startGame()
     },
 
     //-------------INICIAMOS EL JUEGO-------------//
     startGame() {
         this.reset()
+        this.ost.play()
         this.interval = setInterval(() => {
             this.framesCounter++;
+            // controlamos que frameCounter no sea superior a 1000
+            if (this.framesCounter > 1000) this.framesCounter = 0;
+
+            // controlamos la velocidad de generación de obstáculos
+            if (this.framesCounter % 10 == 0) this.score++; //Aumentamos la puntuación de la partida cada 100 frames.
             this.clear()
             this.drawAll()
             this.moveAll()
@@ -51,15 +62,22 @@ const alienHome = {
                 if (this.isDeadEnemy()) {
                     this.enemies.splice(0, 1)
                     this.player1.acids.splice(0, 1)
+                    this.score += 50
                 }
             }
             if (this.enemies.length != 0) {
 
                 if (this.isCollision()) {
-                    if (this.framesCounter % 40 == 0) {
+                    if (this.framesCounter % 10 == 0) {
+                        //si hay impacto de bala de parte del enemigo, pierde una vida
                         this.life.pop()
+                        this.grunt.play()
+
                     }
                     if (this.life.length === 0) {
+                        // si pierde la última vida, Game Over
+                        this.gameOverSound.play();
+                        this.scoreboard.init(this.ctx);
                         this.gameOver();
                     }
                 }
@@ -78,9 +96,11 @@ const alienHome = {
         this.player1 = new Player(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
         this.enemy1 = new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
         this.platform = new Platform(this.ctx, this.framesCounter);
+        this.scoreboard = ScoreBoard;
+        this.scoreboard.init(this.ctx);
+        this.score = 0;
         for (i = 0; i < 3; i++) {
             this.life.push(new LifeIcons(this.ctx, this.wSize.width, this.wSize.height, i));
-            console.log(this.life)
         }
     },
 
@@ -94,6 +114,7 @@ const alienHome = {
         this.player1.draw(this.framesCounter);
         this.enemies.forEach(ene => ene.draw(this.framesCounter));
         this.life.forEach(elm => elm.draw());
+        this.drawScore();
 
     },
 
@@ -114,7 +135,7 @@ const alienHome = {
 
     //-------------GENERAR ENEMIGOS-------------------------------------//
     generateEnemies() {
-        if (this.framesCounter % 400 == 0) {
+        if (this.framesCounter % Math.floor(Math.random() * (600 - 300 + 1) + 100) == 0) {
             this.enemies.push(new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.player1));
         }
     },
@@ -152,10 +173,19 @@ const alienHome = {
     },
 
     isDeadEnemy() {
+
+        this.scream.play()
         return this.player1.acids.some(
             eachAcid =>
                 this.enemies[0].posX <= eachAcid.posX && this.enemies[0].posY <= eachAcid.posY
         )
+
+
+    },
+
+    drawScore() {
+        //con esta funcion pintamos el marcador
+        this.scoreboard.update(this.score);
     },
 
     isOnPlatform() {
@@ -179,7 +209,10 @@ const alienHome = {
     },
 
     gameOver() {
-        clearInterval(this.interval);
+
+        clearInterval(this.interval)
+        this.ost.pause()
+
     },
 
 }

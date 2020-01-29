@@ -5,12 +5,12 @@ class Floor {
         this.height = h;
 
         this.image = new Image();
-        this.image.src = 'images/floor.jpg'
+        this.image.src = 'images/floor2.jpg'
 
         this.posX = 0
         this.posY = 700
 
-        this.velX = 3;
+        this.velX = 5;
     }
 
     draw() {

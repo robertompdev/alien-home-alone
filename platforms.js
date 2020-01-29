@@ -7,7 +7,7 @@ class Platform {
         this.image.src = 'images/platform.gif';
         this.width = 400;
         this.height = 60;
-        this.velX = 4;
+        this.velX = 7;
 
     }
 

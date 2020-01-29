@@ -5,7 +5,7 @@
 
 body {
   text-align: center;
-  background-color: #1b1c1c;
+  background-color: #000000;
 }
 
 body h1 {
@@ -15,10 +15,11 @@ body h1 {
 
 body button {
   font-size: 20px;
+  font-family: monospace;
   background-color: #282828;
-  color: #fff;
-  padding: 30px 70px;
-  border: 0;
+  color: #88c6e7;
+  padding: 20px 50px;
+  border:solid 1px #88c6e7 ;
   box-shadow: 0;
   border-radius: 5px;
   margin-bottom: 20px;

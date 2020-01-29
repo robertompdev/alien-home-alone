@@ -97,7 +97,7 @@ class Player {
 
 
     animate(framesCounter) {
-        if (framesCounter % 20 === 0) {
+        if (framesCounter % 15 === 0) {
             this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
             //if (this.posY === this.posY0) {
             if (this.image.framesIndex > 2) {
@@ -111,7 +111,7 @@ class Player {
     }
 
     setListeners(isOnPlatform) {
-        document.addEventListener("keydown", e => {
+        document.addEventListener("keyup", e => {
             if (e.keyCode === this.keys.TOP_KEY) {
 
                 if (this.posY >= this.posY0) {

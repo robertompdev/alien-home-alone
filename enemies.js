@@ -18,9 +18,10 @@ class Enemy {
 
         this.image.frames = 3; //Indicamos el numero de frames que tiene la imagen
         this.image.framesIndex = 0; //Frame actual menos 1, lo usaremos para recortar la imagen en drawImage
-        this.velX = 6;
+        this.velX = 9;
         this.bullets = [];
         this.player1 = undefined;
+        this.laser = new Audio("sound_fx/PM_FSSF2_WEAPONS_H2_SHOT_324.mp3");
 
     }
 
@@ -55,7 +56,7 @@ class Enemy {
                 this.image.framesIndex = 0
             }
         }
-        if (framesCounter % 80 === 0) {
+        if (framesCounter % 50 === 0) {
 
             this.shoot()
 
@@ -69,6 +70,7 @@ class Enemy {
 
     shoot() {
         //Instanciamos nuevas balas
+        this.laser.play()
         this.bullets.push(new Bullet(this.ctx, this.posX, this.posY - 60, this.posY0, this.height));
     }
 

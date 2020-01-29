@@ -10,8 +10,8 @@ class LifeIcons {
         this.width = 80;
         this.height = 80;
 
-        this.posX = this.gameWidth / 15 + (this.width + 20) * arrLength;
-        this.posY = 50;
+        this.posX = this.gameWidth / 21 + (this.width + 20) * arrLength;
+        this.posY = 90;
 
     }
 
