@@ -23,8 +23,9 @@ const alienHome = {
     },
     enemies: [],
     platforms: [],
+    life: [],
 
-    ///////////////MÉTODOS/////////////
+    //////////////////--MÉTODOS--////////////////////
     //-------------INICIAMOS EL CANVAS-------------//
     init(id) {
         this.canvasDom = document.getElementById(id)
@@ -55,7 +56,12 @@ const alienHome = {
             if (this.enemies.length != 0) {
 
                 if (this.isCollision()) {
-                    this.gameOver();
+                    if (this.framesCounter % 40 == 0) {
+                        this.life.pop()
+                    }
+                    if (this.life.length === 0) {
+                        this.gameOver();
+                    }
                 }
 
             };
@@ -65,25 +71,33 @@ const alienHome = {
     },
 
 
-    //-------------RESET GMAE-------------//
+    //---------------------------RESET GAME------------------------------//
     reset() {
         this.background = new Background(this.ctx, this.wSize.width, this.wSize.height)
         this.floor = new Floor(this.ctx, this.wSize.width, this.wSize.height)
         this.player1 = new Player(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
         this.enemy1 = new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
         this.platform = new Platform(this.ctx, this.framesCounter);
+        for (i = 0; i < 3; i++) {
+            this.life.push(new LifeIcons(this.ctx, this.wSize.width, this.wSize.height, i));
+            console.log(this.life)
+        }
     },
 
-
+    //------------REDIBUJAR TODOS LOS ELEMENTOS EN CADA FRAME------------//
     drawAll() {
         this.background.draw();
         this.floor.draw();
+
         this.platform.draw();
         this.platforms.forEach(plat => plat.draw(this.framesCounter));
         this.player1.draw(this.framesCounter);
         this.enemies.forEach(ene => ene.draw(this.framesCounter));
+        this.life.forEach(elm => elm.draw());
+
     },
 
+    //-------------ANIMAR LOS ELEMENTOS EN CADA FRAME--------------------//
     moveAll() {
         this.enemies.forEach(ene => ene.move());
         this.player1.jump(this.framesCounter);
@@ -93,16 +107,19 @@ const alienHome = {
         this.platforms.forEach(plat => plat.move());
     },
 
+    //-------------LIMPIAR TODOS LOS ELEMENTOS EN CADA FRAME-------------//
     clear() {
         this.ctx.clearRect(0, 0, this.wSize.width, this.wSize.height);
     },
 
+    //-------------GENERAR ENEMIGOS-------------------------------------//
     generateEnemies() {
         if (this.framesCounter % 400 == 0) {
-            this.enemies.push(new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.player1)); //pusheamos nuevos obstaculos
+            this.enemies.push(new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.player1));
         }
     },
 
+    //------------LIMPIAR LOS ENEMIGOS QUE SALEN DE PANTALLA------------//
     clearEnemies() {
         this.enemies.forEach((ene, idx) => {
             if (ene.posX <= -200) {
@@ -113,7 +130,7 @@ const alienHome = {
 
     generatePlatforms() {
         if (this.framesCounter % 200 == 0) {
-            this.platforms.push(new Platform(this.ctx)); //pusheamos nuevos obstaculos
+            this.platforms.push(new Platform(this.ctx));
         }
     },
 
@@ -126,15 +143,12 @@ const alienHome = {
     },
 
     isCollision() {
-        // funcion para comprobar colisiones
-
         return this.enemies[0].bullets.some(
             eachBullet =>
                 this.player1.posX + this.player1.width - 40 >= eachBullet.posX
                 && this.player1.posY + this.player1.height - 50 >= eachBullet.posY
                 && this.player1.posX + 40 <= eachBullet.posX + eachBullet.width
         )
-        //fin del juego, detenemos intervalo
     },
 
     isDeadEnemy() {
@@ -145,13 +159,6 @@ const alienHome = {
     },
 
     isOnPlatform() {
-
-        // if (this.player1.posX + this.player1.width >= this.platforms[0].posX && this.player1.posX <= this.platforms[0].posX + this.platforms[0].width && this.player1.posY + 200 <= this.platforms[0].posY) {
-        //     return true
-        // }
-        // 
-        // )
-
         let collision = this.platforms.find(obs => {
             return (
                 this.player1.posX + this.player1.width >= obs.posX &&
@@ -166,27 +173,13 @@ const alienHome = {
             this.player1.obj = collision
             this.player1.posY0 = collision.posY - this.player1.height
             this.player1.posY = this.player1.posY0 + 60
-            console.log(this.player1.posY0)
-
         } else {
             this.player1.posY0 = this.wSize.height - this.player1.height
         }
-
-
-
-
     },
-
-
 
     gameOver() {
-        //Gameover detiene el juego.
         clearInterval(this.interval);
-
     },
-
-
-
-
 
 }

@@ -1,5 +1,5 @@
 class Player {
-    constructor(ctx, w, h, keys) {
+    constructor(ctx, w, h, keys, isOnPlatform) {
         this.ctx = ctx;
         this.gameWidth = w;
         this.gameHeight = h;
@@ -18,6 +18,7 @@ class Player {
         this.image.frames = 3; //Indicamos el numero de frames que tiene la imagen
         this.image.framesIndex = 0; //Frame actual menos 1, lo usaremos para recortar la imagen en drawImage
         this.keys = keys;
+        this.isOnPlatform = isOnPlatform;
 
         this.acids = [];
 
@@ -50,12 +51,12 @@ class Player {
         this.acids.forEach(acids => acids.draw());
         this.acids.forEach(acids => acids.move());
 
-        //Funcion que anima los frames.
 
-        //this.bullets.forEach(bullet => bullet.draw()); //El player dibuja las balas.
+
+
     }
 
-    jump() {
+    jump(isOnPlatform) {
         let gravity = 0.7;
 
         if (this.posY <= this.posY0) {
