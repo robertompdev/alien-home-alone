@@ -1,26 +1,23 @@
-* {
-  margin: 0px;
-  padding: 0;
-}
-
 body {
   text-align: center;
   background-color: #000000;
-}
-
-body h1 {
-  font-size: 30px;
+  color: #88c6e7;
+  font-family: monospace;
+  font-size: 2em;
+  text-align: center;
+  margin:20px;
   text-transform: uppercase;
+  margin: 30px;
 }
 
 body button {
   font-size: 20px;
-  font-family: monospace;
+  font-family: inherit;
   background-color: #282828;
   color: #88c6e7;
   padding: 20px 50px;
   border:solid 1px #88c6e7 ;
   box-shadow: 0;
   border-radius: 5px;
-  margin-bottom: 20px;
 }
+

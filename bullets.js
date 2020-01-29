@@ -5,7 +5,7 @@ class Bullet {
         this.posY = y + 140;
         this.posY0 = y0
         this.radius = 4;
-        this.velX = 10;
+        this.velX = 15;
         this.width = 4
     }
 

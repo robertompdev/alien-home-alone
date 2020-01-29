@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script type="text/javascript" src="alienwound.js"></script>
     <script type="text/javascript" src="gameover.js"></script>
     <script type="text/javascript" src="scoreboard.js"></script>
     <script type="text/javascript" src="acid.js"></script>
@@ -17,6 +18,9 @@
     <script type="text/javascript" src="bg.js"></script>
     <script type="text/javascript" src="game.js"></script>
     <script type="text/javascript" src="script.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     <link rel="stylesheet" href="style.css">
 
@@ -25,12 +29,18 @@
 
 <body>
     <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <img src="images/Aliens-logo.svg.png" alt="Alien Home Alone" style="width:25%;">
+        <div class="row align-items-center h-100">
+            <div class="col-md-5">
+                <img src="images/Aliens-logo.svg.png" alt="Alien Home Alone" style="width:100%;">
             </div>
-            <div class="col-md-6">
+            <div class="col-md-2">
                 <button id="start-button">Start Game</button>
+            </div>
+            <div class="col-md-5 ">
+                <ul>
+                    <li>Space bar: Spit acid.</li>
+                    <li>Up arrow: Jump.</li>
+                </ul>
             </div>
         </div>
     </div>

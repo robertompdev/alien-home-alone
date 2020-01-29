@@ -28,7 +28,8 @@ const alienHome = {
     scream: new Audio("sound_fx/wilhelm-scream-gaming-sound-effect-hd.mp3"),
     grunt: new Audio("sound_fx/zapsplat_animals_bear_grunt_002_17144.mp3"),
     gameOverSound: new Audio("sound_fx/zapsplat_multimedia_male_voice_processed_says_game_over_002_23669.mp3"),
-    gameOverScreenMsg: GameOverScreen,
+    gameOverScreenMsg: undefined,
+    alienWound: undefined,
 
 
     //////////////////--MÉTODOS--////////////////////
@@ -57,7 +58,9 @@ const alienHome = {
             this.generateEnemies();
             this.clearEnemies();
             this.generatePlatforms();
+            this.isPlatCollision();
             this.clearPlatforms();
+            this.clearAcid();
             if (this.player1.acids.length != 0 && this.enemies.length != 0) {
                 if (this.isDeadEnemy()) {
                     this.enemies.splice(0, 1)
@@ -68,8 +71,10 @@ const alienHome = {
             if (this.enemies.length != 0) {
 
                 if (this.isCollision()) {
+
                     if (this.framesCounter % 10 == 0) {
                         //si hay impacto de bala de parte del enemigo, pierde una vida
+                        this.alienWound.draw((this.player1.posX + this.player1.width - 100), this.player1.posY + 70);
                         this.life.pop()
                         this.grunt.play()
 
@@ -95,26 +100,30 @@ const alienHome = {
         this.floor = new Floor(this.ctx, this.wSize.width, this.wSize.height)
         this.player1 = new Player(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
         this.enemy1 = new Enemy(this.ctx, this.wSize.width, this.wSize.height, this.keys, this.background, this.floor);
-        this.platform = new Platform(this.ctx, this.framesCounter);
+        this.platform = new Platform(this.ctx, 1);
+        this.alienWound = new AlienWound(this.ctx)
         this.scoreboard = ScoreBoard;
         this.scoreboard.init(this.ctx);
         this.score = 0;
         for (i = 0; i < 3; i++) {
             this.life.push(new LifeIcons(this.ctx, this.wSize.width, this.wSize.height, i));
         }
+        this.gameOverScreenMsg = new GameOverScreen(this.ctx, this.wSize.width, this.wSize.height)
     },
 
     //------------REDIBUJAR TODOS LOS ELEMENTOS EN CADA FRAME------------//
     drawAll() {
         this.background.draw();
         this.floor.draw();
-
         this.platform.draw();
-        this.platforms.forEach(plat => plat.draw(this.framesCounter));
+        this.platforms.forEach(plat => plat.draw());
         this.player1.draw(this.framesCounter);
         this.enemies.forEach(ene => ene.draw(this.framesCounter));
         this.life.forEach(elm => elm.draw());
+
         this.drawScore();
+
+
 
     },
 
@@ -126,6 +135,7 @@ const alienHome = {
         this.floor.move()
         this.player1.animate()
         this.platforms.forEach(plat => plat.move());
+
     },
 
     //-------------LIMPIAR TODOS LOS ELEMENTOS EN CADA FRAME-------------//
@@ -151,14 +161,25 @@ const alienHome = {
 
     generatePlatforms() {
         if (this.framesCounter % 200 == 0) {
-            this.platforms.push(new Platform(this.ctx));
+            this.platforms.push(new Platform(this.ctx, Math.floor(Math.random() * 5 + 1)));
         }
+        // if (this.framesCounter % 500 == 0) {
+        //     otroArray.push(new Platform(this.ctx, Math.floor(Math.random() * 5 + 1)), velo);
+        // }
     },
 
     clearPlatforms() {
         this.platforms.forEach((plat, idx) => {
-            if (plat.posX <= -500) {
+            if (plat.posX <= -700) {
                 this.platforms.splice(idx, 1);
+            }
+        });
+    },
+
+    clearAcid() {
+        this.player1.acids.forEach((plat, idx) => {
+            if (plat.posX >= 700) {
+                this.player1.acids.splice(idx, 1);
             }
         });
     },
@@ -170,6 +191,17 @@ const alienHome = {
                 && this.player1.posY + this.player1.height - 50 >= eachBullet.posY
                 && this.player1.posX + 40 <= eachBullet.posX + eachBullet.width
         )
+    },
+
+    isPlatCollision() {
+        for (let i = 1; i < this.platforms.length; i++) {
+
+            if (this.platforms[i].posX <= this.platforms[i - 1].posX + this.platforms[i - 1].width) {
+                this.platforms[i].velXodd = 20
+            } else if (this.platforms[i].posX + this.platforms[i].width > 1600) {
+                this.platforms[i].velXodd = -20
+            }
+        }
     },
 
     isDeadEnemy() {
@@ -209,7 +241,7 @@ const alienHome = {
     },
 
     gameOver() {
-
+        this.gameOverScreenMsg.draw()
         clearInterval(this.interval)
         this.ost.pause()
 
