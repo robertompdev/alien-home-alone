@@ -10,8 +10,6 @@ class Platform {
         this.velX = -7;
         this.velXodd = -20;
         this.randomNo = randomNo;
-
-
     }
 
 
@@ -21,6 +19,7 @@ class Platform {
 
     }
 
+    //----DETERMINA LA VELOCIDAD A LA QUE SE VA A MOVER LA PLATAFORMA SEGÚN EL NÚMERO randomNo QUE VIENE COMO ARGUMENTO---//
     move() {
 
         if (this.randomNo != 5) {

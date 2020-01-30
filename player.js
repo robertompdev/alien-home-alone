@@ -22,6 +22,9 @@ class Player {
 
         this.acids = [];
 
+        this.acidSpit = new Audio("sound_fx/zapsplat_human_spit_blow_water_spray_001_14769.mp3");
+        this.jumpSound = new Audio("sound_fx/zapsplat_warfare_sword_swing_fast_whoosh_blade_ring_004_43813.mp3");
+
         this.setListeners();
     }
 
@@ -41,16 +44,12 @@ class Player {
         this.animate(framesCounter);
         this.acids.forEach(acids => acids.draw());
         this.acids.forEach(acids => acids.move());
-
-
-
-
     }
 
-    jump() {
+    jump(isOnPlatform) {
         let gravity = 0.7;
 
-        if (this.posY <= this.posY0) {
+        if (this.posY <= this.posY0 || isOnPlatform) {
 
             this.posY += this.velY;
             this.velY += gravity;
@@ -77,14 +76,10 @@ class Player {
     setListeners(isOnPlatform) {
         document.addEventListener("keyup", e => {
             if (e.keyCode === this.keys.TOP_KEY) {
-
+                this.jumpSound.play()
                 if (this.posY >= this.posY0) {
                     this.posY -= 40; //Añadimos algo de velocidad al salto para generar el efecto de suavidad y que la gravedad no tire directamente de él
                     this.velY -= 20;
-                    // } else if (isOnPlatform) {
-                    //     this.posY -= 40; //Añadimos algo de velocidad al salto para generar el efecto de suavidad y que la gravedad no tire directamente de él
-                    //     this.velY -= 20;
-
                 }
 
             } else if (e.keyCode === this.keys.SPACE) {
@@ -96,9 +91,8 @@ class Player {
     }
 
     shoot() {
-
-        //Instanciamos nuevas balas
+        //Instanciamos el ácido
+        this.acidSpit.play()
         this.acids.push(new Acid(this.ctx, this.posX, this.posY, this.posY0, this.height));
-
     }
 }
