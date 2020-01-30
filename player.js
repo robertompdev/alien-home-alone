@@ -26,15 +26,6 @@ class Player {
     }
 
     draw(framesCounter) {
-        // let zeroDieB = 0
-        // let zeroDieA = 0
-        // if (this.posY >= this.posY0) {
-        //     zeroDieB = this.image.height - 240;
-        //     zeroDieA = 0;
-        // } else {
-        //     zeroDieB = this.image.height - 240; //Punto y donde termina de recortar
-        //     zeroDieA = 120;
-        // };
 
         this.ctx.drawImage(
             this.image,
@@ -56,56 +47,29 @@ class Player {
 
     }
 
-    jump(isOnPlatform) {
+    jump() {
         let gravity = 0.7;
 
         if (this.posY <= this.posY0) {
-
-            //Comprobamos que el player nunca sobrepase el suelo.
 
             this.posY += this.velY;
             this.velY += gravity;
 
         } else {
-            //Si lo hace reseteamos posición y velocidad
+
             this.velY = 1;
             this.posY = this.posY0;
         }
 
-        //this.bullets.forEach(bullet => bullet.move()); //Movemos las balas
     }
 
-    // jumpOnPlatform() {
-    //     let gravity = 0.7;
-
-    //     if (this.posY <= this.posY0 + 200) {
-
-    //         //Comprobamos que el player nunca sobrepase el suelo.
-
-    //         this.posY += this.velY;
-    //         this.velY += gravity;
-
-    //     } else {
-    //         //Si lo hace reseteamos posición y velocidad
-    //         this.velY = 1;
-    //         this.posY = this.posY0;
-    //     }
-
-    //     //this.bullets.forEach(bullet => bullet.move()); //Movemos las balas
-    // }
-
-
-
     animate(framesCounter) {
+
         if (framesCounter % 15 === 0) {
-            this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
-            //if (this.posY === this.posY0) {
+            this.image.framesIndex++;
             if (this.image.framesIndex > 2) {
                 this.image.framesIndex = 0;
             }
-            // } else {
-            //   this.image.framesIndex = 0
-            //}
         }
 
     }
@@ -115,9 +79,12 @@ class Player {
             if (e.keyCode === this.keys.TOP_KEY) {
 
                 if (this.posY >= this.posY0) {
-                    //Comprobamos que el player este en el suelo antes de saltar
                     this.posY -= 40; //Añadimos algo de velocidad al salto para generar el efecto de suavidad y que la gravedad no tire directamente de él
                     this.velY -= 20;
+                    // } else if (isOnPlatform) {
+                    //     this.posY -= 40; //Añadimos algo de velocidad al salto para generar el efecto de suavidad y que la gravedad no tire directamente de él
+                    //     this.velY -= 20;
+
                 }
 
             } else if (e.keyCode === this.keys.SPACE) {

@@ -130,7 +130,7 @@ const alienHome = {
     //-------------ANIMAR LOS ELEMENTOS EN CADA FRAME--------------------//
     moveAll() {
         this.enemies.forEach(ene => ene.move());
-        this.player1.jump(this.framesCounter);
+        this.player1.jump(this.isOnPlatform());
         this.background.move()
         this.floor.move()
         this.player1.animate()
@@ -159,15 +159,14 @@ const alienHome = {
         });
     },
 
+    //-------------GENERAR PLATAFORMAS---------------------------------//
     generatePlatforms() {
         if (this.framesCounter % 200 == 0) {
             this.platforms.push(new Platform(this.ctx, Math.floor(Math.random() * 5 + 1)));
         }
-        // if (this.framesCounter % 500 == 0) {
-        //     otroArray.push(new Platform(this.ctx, Math.floor(Math.random() * 5 + 1)), velo);
-        // }
     },
 
+    //----------LIMPIAR LAS PLATAFORMAS QUE SALEN DE PANTALLA----------//
     clearPlatforms() {
         this.platforms.forEach((plat, idx) => {
             if (plat.posX <= -700) {
@@ -176,6 +175,7 @@ const alienHome = {
         });
     },
 
+    //----LIMPIAR ÁCIDO QUE ESCUPE EL PLAYER A 700px DE SU POSICIÓN-----//   
     clearAcid() {
         this.player1.acids.forEach((plat, idx) => {
             if (plat.posX >= 700) {
@@ -184,6 +184,7 @@ const alienHome = {
         });
     },
 
+    //-----DETECTAR LOS IMPACTOS DE BALAS ENEMIGAS SOBRE EL PLAYER-----//
     isCollision() {
         return this.enemies[0].bullets.some(
             eachBullet =>
@@ -193,6 +194,7 @@ const alienHome = {
         )
     },
 
+    //---DETECTAR SI UNA PLATAFORMA CHOCA CON OTRA EN EL EJE X Y SALE REBOTADA---//
     isPlatCollision() {
         for (let i = 1; i < this.platforms.length; i++) {
 
@@ -204,6 +206,7 @@ const alienHome = {
         }
     },
 
+    //-------DETECTAR SI EL ÁCIDO IMPACTA SOBRE LOS ENEMIGOS------//
     isDeadEnemy() {
 
         this.scream.play()
@@ -212,14 +215,15 @@ const alienHome = {
                 this.enemies[0].posX <= eachAcid.posX && this.enemies[0].posY <= eachAcid.posY
         )
 
-
     },
 
+    //---------------DIBUJA EL MARCADOR DE PUNTOS-----------------//
     drawScore() {
-        //con esta funcion pintamos el marcador
+
         this.scoreboard.update(this.score);
     },
 
+    //-----DETECTAR SI EL PLAYER SE QUEDA SOBRE UNA PLATAFORMA-----//
     isOnPlatform() {
         let collision = this.platforms.find(obs => {
             return (
@@ -240,6 +244,7 @@ const alienHome = {
         }
     },
 
+    //---------------MUESTRA EL MENSAJE DE GAME OVER, PARA LA MÚSICA Y LIMPIA EL INTERVALO-----------------//
     gameOver() {
         this.gameOverScreenMsg.draw()
         clearInterval(this.interval)
