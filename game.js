@@ -21,6 +21,8 @@ const alienHome = {
     framesCounter: 0,
     gameOverScreenMsg: undefined,
     impactsOnBoss: 0,
+    lastBossPosX: 0,
+    lastBossPosY: 0,
     score: undefined,
 
     // Tamaño del canvas.
@@ -80,6 +82,10 @@ const alienHome = {
             this.isPlatCollision();
             this.clearPlatforms();
             this.clearAcid();
+            if (this.bosses.length != 0) {
+                this.lastBossPosX = this.bosses[0].posX
+                this.lastBossPosY = this.bosses[0].posY
+            }
             if (this.player1.acids.length != 0 && this.enemies.length != 0) {
                 if (this.isDeadEnemy()) {
                     this.enemies.splice(0, 1)
@@ -90,7 +96,7 @@ const alienHome = {
             };
             if (this.player1.acids.length != 0 && this.bosses.length != 0) {
                 if (this.isDeadBoss()) {
-                    this.explosion.draw(this.framesCounter, this.bosses[0].posX, this.bosses[0].posY)
+                    // this.explosion.draw(this.framesCounter, this.bosses[0].posX, this.bosses[0].posY)
                     this.bosses.splice(0, 1)
                     this.player1.acids.splice(0, 1)
                     this.score += 200
@@ -144,6 +150,7 @@ const alienHome = {
         this.enemies.forEach(ene => ene.draw(this.framesCounter));
         this.bosses.forEach(boss => boss.draw(this.framesCounter));
         this.life.forEach(elm => elm.draw());
+        if (this.isDeadBoss()) { this.explosion.draw(this.framesCounter, this.lastBossPosX, this.lastBossPosY) };
         this.drawScore();
     },
 
@@ -255,7 +262,8 @@ const alienHome = {
     //---DETECTAR SI UNA PLATAFORMA CHOCA CON OTRA EN EL EJE X Y SALE REBOTADA---//
     isPlatCollision() {
         for (let i = 1; i < this.platforms.length; i++) {
-            if (this.platforms[i].posX <= this.platforms[i - 1].posX + this.platforms[i - 1].width) {
+            if (this.platforms[i].posX <= this.platforms[i - 1].posX + this.platforms[i - 1].width
+                && this.platforms[i].posY == this.platforms[i - 1].posY) {
                 this.platforms[i].velXodd = 20
             } else if (this.platforms[i].posX + this.platforms[i].width > 1600) {
                 this.platforms[i].velXodd = -20
@@ -273,12 +281,14 @@ const alienHome = {
 
     //-------DETECTAR SI EL ÁCIDO IMPACTA 3 VECES SOBRE EL BOSS------//
     isDeadBoss() {
-        if (this.player1.acids.some(eachAcid => this.bosses[0].posX <= eachAcid.posX && this.bosses[0].posY <= eachAcid.posY)) {
-            this.metalImpactSound.play()
-            this.impactsOnBoss++
-            if (this.impactsOnBoss >= 3) {
-                this.impactsOnBoss = 0
-                return true
+        if (this.bosses.length != 0) {
+            if (this.player1.acids.some(eachAcid => this.bosses[0].posX <= eachAcid.posX && this.bosses[0].posY <= eachAcid.posY)) {
+                this.metalImpactSound.play()
+                this.impactsOnBoss++
+                if (this.impactsOnBoss >= 3) {
+                    this.impactsOnBoss = 0
+                    return true
+                }
             }
         }
     },
