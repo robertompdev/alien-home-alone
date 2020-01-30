@@ -13,11 +13,9 @@ class Explosion {
 
         this.image.frames = 5; //Indicamos el numero de frames que tiene la imagen
         this.image.framesIndex = 0; //Frame actual menos 1, lo usaremos para recortar la imagen en drawImage
-
     }
 
     draw(framesCounter, posX, posY) {
-
         this.ctx.drawImage(
             this.image,
             this.image.framesIndex * Math.floor(this.image.width / this.image.frames), //Punto x donde empieza a recortar
@@ -28,22 +26,16 @@ class Explosion {
             posY - 60,
             this.width,
             this.height,
-
         );
         this.animate(framesCounter);
-
     }
 
     animate(framesCounter) {
-
-        if (framesCounter % 70 === 0) {
+        if (framesCounter % 40 === 0) {
             this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
-            if (this.image.framesIndex > 5) {
+            if (this.image.framesIndex > 4) {
                 this.image.framesIndex = 0;
             }
-
         }
-
-
     }
 }

@@ -47,10 +47,11 @@ const alienHome = {
     ost: new Audio("music/ost.mp3"),
 
     // SFX.
-    scream: new Audio("sound_fx/wilhelm-scream-gaming-sound-effect-hd.mp3"),
     explosionSound: new Audio("sound_fx/explosion_internal_loud_bang_blow_up_safe.mp3"),
-    grunt: new Audio("sound_fx/zapsplat_animals_bear_grunt_002_17144.mp3"),
     gameOverSound: new Audio("sound_fx/zapsplat_multimedia_male_voice_processed_says_game_over_002_23669.mp3"),
+    grunt: new Audio("sound_fx/zapsplat_animals_bear_grunt_002_17144.mp3"),
+    metalImpactSound: new Audio("sound_fx/zapsplat_impact_metal_large_loose_hit_light_006_38802.mp3"),
+    scream: new Audio("sound_fx/wilhelm-scream-gaming-sound-effect-hd.mp3"),
 
     //////////////////--MÉTODOS--////////////////////
     //-------------INICIAMOS EL CANVAS-------------//
@@ -97,13 +98,11 @@ const alienHome = {
                 }
             };
             if (this.isCollision() || this.isCollisionBoss() || this.isCrashedBoss()) {
-
                 if (this.framesCounter % 10 == 0) {
                     // Si hay impacto de bala de parte del enemigo, pierde una vida.
                     this.alienWound.draw((this.player1.posX + this.player1.width - 100), this.player1.posY + 70);
                     this.life.pop()
                     this.grunt.play()
-
                 }
                 if (this.life.length === 0) {
                     // Si pierde la última vida, Game Over.
@@ -236,8 +235,9 @@ const alienHome = {
             return this.bosses[0].bullets.some(
                 eachBullet =>
                     this.player1.posX + this.player1.width - 40 >= eachBullet.posX
-                    && this.player1.posY <= eachBullet.posY
                     && this.player1.posX + 40 <= eachBullet.posX + eachBullet.width
+                    && this.player1.posY + this.player1.height >= eachBullet.posY
+                    && this.player1.posY <= eachBullet.posY
             )
         }
     },
@@ -274,6 +274,7 @@ const alienHome = {
     //-------DETECTAR SI EL ÁCIDO IMPACTA 3 VECES SOBRE EL BOSS------//
     isDeadBoss() {
         if (this.player1.acids.some(eachAcid => this.bosses[0].posX <= eachAcid.posX && this.bosses[0].posY <= eachAcid.posY)) {
+            this.metalImpactSound.play()
             this.impactsOnBoss++
             if (this.impactsOnBoss >= 3) {
                 this.impactsOnBoss = 0

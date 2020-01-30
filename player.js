@@ -14,6 +14,7 @@ class Player {
         this.posY0 = this.gameHeight * 0.98 - this.height; //Guardamos la posicion original para usarla como suelo
         this.posY = this.gameHeight * 0.98 - this.height;
         this.velY = 120;
+        this.gravity = 0.7;
 
         this.image.frames = 3; //Indicamos el numero de frames que tiene la imagen
         this.image.framesIndex = 0; //Frame actual menos 1, lo usaremos para recortar la imagen en drawImage
@@ -47,29 +48,28 @@ class Player {
     }
 
     jump(isOnPlatform) {
-        let gravity = 0.7;
 
         if (this.posY <= this.posY0 || isOnPlatform) {
             this.posY += this.velY;
-            this.velY += gravity;
-
+            this.velY += this.gravity;
         } else {
-
             this.velY = 1;
             this.posY = this.posY0;
         }
+    }
 
+    goDown() {
+        this.posY += this.velY;
+        this.velY += this.gravity;
     }
 
     animate(framesCounter) {
-
         if (framesCounter % 15 === 0) {
             this.image.framesIndex++;
             if (this.image.framesIndex > 2) {
                 this.image.framesIndex = 0;
             }
         }
-
     }
 
     setListeners(isOnPlatform) {
@@ -80,13 +80,12 @@ class Player {
                     this.posY -= 40; //Añadimos algo de velocidad al salto para generar el efecto de suavidad y que la gravedad no tire directamente de él
                     this.velY -= 20;
                 }
-
             } else if (e.keyCode === this.keys.SPACE) {
                 this.shoot();
-
+            } else if (e.keyCode === this.keys.BOTTOM_KEY) {
+                this.goDown()
             }
         });
-
     }
 
     shoot() {

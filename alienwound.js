@@ -7,12 +7,9 @@ class AlienWound {
 
         this.width = 60;
         this.height = 60;
-
     }
 
     draw(posX, posY) {
-
         this.ctx.drawImage(this.image, posX, posY, this.width, this.height)
-
     }
 }
