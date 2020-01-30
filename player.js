@@ -50,7 +50,6 @@ class Player {
         let gravity = 0.7;
 
         if (this.posY <= this.posY0 || isOnPlatform) {
-
             this.posY += this.velY;
             this.velY += gravity;
 

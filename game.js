@@ -1,19 +1,34 @@
 const alienHome = {
+
+    //////////////////--PROPIEDADES--////////////////////
     name: 'Alien Home Alone',
     description: 'HTML5 Canvas',
     author: 'Roberto Marrero',
     license: undefined,
     version: 'beta',
+
+    // Velocidad de Frames Per Second.
+    fpsCounter: 60,
+
+    // Número de vidas del player.
+    numberOfLifes: 3,
+
+    // Propiedades inicializadas de forma global.
+    alienWound: undefined,
+    canvas: undefined,
     canvasDom: undefined,
     ctx: undefined,
-    fpsCounter: 60,
-    score: undefined,
     framesCounter: 0,
-    canvas: undefined,
+    gameOverScreenMsg: undefined,
+    impactsOnBoss: 0,
+    score: undefined,
+
+    // Tamaño del canvas.
     wSize: {
         width: 1200,
         height: 800,
     },
+    // Definimos las teclas que pueden entrar en juego.
     keys: {
         TOP_KEY: 38,
         BOTTOM_KEY: 40,
@@ -21,22 +36,21 @@ const alienHome = {
         RIGHT_KEY: 39,
         SPACE: 32
     },
-    impactsOnBoss: 0,
-    //Arrays
+
+    // Definimos arrays.
     enemies: [],
     bosses: [],
     platforms: [],
     life: [],
-    //Música
+
+    // Música.
     ost: new Audio("music/ost.mp3"),
+
+    // SFX.
     scream: new Audio("sound_fx/wilhelm-scream-gaming-sound-effect-hd.mp3"),
     explosionSound: new Audio("sound_fx/explosion_internal_loud_bang_blow_up_safe.mp3"),
     grunt: new Audio("sound_fx/zapsplat_animals_bear_grunt_002_17144.mp3"),
     gameOverSound: new Audio("sound_fx/zapsplat_multimedia_male_voice_processed_says_game_over_002_23669.mp3"),
-    //Propiedades inicializadas de forma global
-    gameOverScreenMsg: undefined,
-    alienWound: undefined,
-
 
     //////////////////--MÉTODOS--////////////////////
     //-------------INICIAMOS EL CANVAS-------------//
@@ -53,8 +67,8 @@ const alienHome = {
         this.ost.play()
         this.interval = setInterval(() => {
             this.framesCounter++;
-            if (this.framesCounter > 10000) this.framesCounter = 0; // controlamos que frameCounter no sea superior a 1000
-            if (this.framesCounter % 10 == 0) this.score++; //Aumentamos la puntuación de la partida cada 10 frames.
+            if (this.framesCounter > 10000) this.framesCounter = 0; // Controlamos que frameCounter no sea superior a 10,000.
+            if (this.framesCounter % 10 == 0) this.score++; // Aumentamos la puntuación de la partida cada 10 frames.
             this.clear()
             this.drawAll()
             this.moveAll()
@@ -80,32 +94,27 @@ const alienHome = {
                     this.player1.acids.splice(0, 1)
                     this.score += 200
                     this.explosionSound.play()
-
                 }
             };
-            if (this.isCollision() || this.isCollisionBoss()) {
+            if (this.isCollision() || this.isCollisionBoss() || this.isCrashedBoss()) {
 
                 if (this.framesCounter % 10 == 0) {
-                    //si hay impacto de bala de parte del enemigo, pierde una vida
+                    // Si hay impacto de bala de parte del enemigo, pierde una vida.
                     this.alienWound.draw((this.player1.posX + this.player1.width - 100), this.player1.posY + 70);
                     this.life.pop()
                     this.grunt.play()
 
                 }
                 if (this.life.length === 0) {
-                    // si pierde la última vida, Game Over
-                    this.gameOverSound.play();
-                    this.scoreboard.init(this.ctx);
-                    this.gameOver();
+                    // Si pierde la última vida, Game Over.
+                    setTimeout(() => { this.gameOver() }, 50)
+                    this.gameOverSound.play()
+                    this.scoreboard.init(this.ctx)
                 }
-
-
             };
             this.isOnPlatform();
-
         }, 1000 / this.fpsCounter)
     },
-
 
     //---------------------------RESET GAME------------------------------//
     reset() {
@@ -120,7 +129,7 @@ const alienHome = {
         this.scoreboard = ScoreBoard;
         this.scoreboard.init(this.ctx);
         this.score = 0;
-        for (i = 0; i < 3; i++) {
+        for (i = 0; i < this.numberOfLifes; i++) {
             this.life.push(new LifeIcons(this.ctx, this.wSize.width, this.wSize.height, i));
         }
         this.gameOverScreenMsg = new GameOverScreen(this.ctx, this.wSize.width, this.wSize.height)
@@ -175,6 +184,7 @@ const alienHome = {
         });
     },
 
+    //------------LIMPIAR LOS BOSSES QUE SALEN DE PANTALLA------------//
     clearBosses() {
         this.bosses.forEach((boss, idx) => {
             if (boss.posX <= -200) {
@@ -232,6 +242,16 @@ const alienHome = {
         }
     },
 
+    //-----DETECTAR LOS IMPACTOS DE BALAS DEL BOSS SOBRE EL PLAYER-----//
+    isCrashedBoss() {
+        if (this.bosses.length !== 0) {
+            return this.bosses.some(
+                eachBoss =>
+                    this.player1.posX + this.player1.width - 40 >= eachBoss.posX
+            )
+        }
+    },
+
     //---DETECTAR SI UNA PLATAFORMA CHOCA CON OTRA EN EL EJE X Y SALE REBOTADA---//
     isPlatCollision() {
         for (let i = 1; i < this.platforms.length; i++) {
@@ -245,7 +265,6 @@ const alienHome = {
 
     //-------DETECTAR SI EL ÁCIDO IMPACTA SOBRE LOS ENEMIGOS------//
     isDeadEnemy() {
-
         return this.player1.acids.some(
             eachAcid =>
                 this.enemies[0].posX <= eachAcid.posX && this.enemies[0].posY <= eachAcid.posY
@@ -254,20 +273,17 @@ const alienHome = {
 
     //-------DETECTAR SI EL ÁCIDO IMPACTA 3 VECES SOBRE EL BOSS------//
     isDeadBoss() {
-
         if (this.player1.acids.some(eachAcid => this.bosses[0].posX <= eachAcid.posX && this.bosses[0].posY <= eachAcid.posY)) {
             this.impactsOnBoss++
             if (this.impactsOnBoss >= 3) {
                 this.impactsOnBoss = 0
                 return true
             }
-
         }
     },
 
     //---------------DIBUJA EL MARCADOR DE PUNTOS-----------------//
     drawScore() {
-
         this.scoreboard.update(this.score);
     },
 
@@ -295,9 +311,8 @@ const alienHome = {
     //---------------MUESTRA EL MENSAJE DE GAME OVER, PARA LA MÚSICA Y LIMPIA EL INTERVALO-----------------//
     gameOver() {
         this.gameOverScreenMsg.draw()
-        clearInterval(this.interval)
         this.ost.pause()
-
+        clearInterval(this.interval)
     },
 
 }
