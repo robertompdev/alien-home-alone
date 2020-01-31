@@ -1,20 +1,15 @@
 class Explosion {
     constructor(ctx) {
         this.ctx = ctx;
-
         this.image = new Image();
         this.image.src = 'images/explosion.png';
-
         this.width = 200;
         this.height = 800;
-
         this.posX = 0;
         this.posY = 0;
-
         this.image.frames = 14; //Indicamos el numero de frames que tiene la imagen
         this.image.framesIndex = 10; //Frame actual menos 1, lo usaremos para recortar la imagen en drawImage
     }
-
     draw(framesCounter, posX, posY) {
         this.ctx.drawImage(
             this.image,
@@ -29,7 +24,6 @@ class Explosion {
         );
         this.animate(framesCounter);
     }
-
     animate(framesCounter) {
         if (framesCounter % 12 === 0) {
             this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.

@@ -11,11 +11,9 @@ class Platform {
         this.velXodd = -20;
         this.randomNo = randomNo;
     }
-
     draw() {
         this.ctx.drawImage(this.image, this.posX, this.posY, this.width, this.height)
     }
-
     //----DETERMINA LA VELOCIDAD A LA QUE SE VA A MOVER LA PLATAFORMA O LA ALTURA SEGÚN EL NÚMERO randomNo QUE VIENE COMO ARGUMENTO---//
     move() {
         if (this.randomNo == 1) {
@@ -27,5 +25,4 @@ class Platform {
             this.posX += this.velX
         }
     }
-
 }

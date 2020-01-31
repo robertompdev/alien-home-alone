@@ -7,8 +7,6 @@ class Acid {
         this.playerHeight = playerH
         this.radius = 6;
         this.velX = 10;
-        //this.acids = [];
-
     }
 
     draw() {
@@ -17,7 +15,6 @@ class Acid {
         this.ctx.arc(this.posX, this.posY, this.radius, 0, Math.PI * 3);
         this.ctx.fill();
         this.ctx.closePath();
-
     }
 
     move() {

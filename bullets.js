@@ -8,19 +8,16 @@ class Bullet {
         this.velX = 15;
         this.width = 4
     }
-
-    draw(framescounter) {
+    draw() {
         this.ctx.beginPath()
         this.ctx.fillStyle = "#fceb32";
         this.ctx.arc(this.posX, this.posY, this.radius, 0, Math.PI * 2);
         this.ctx.fill();
         this.ctx.closePath();
     }
-
     move() {
         this.posX -= this.velX
     }
-
     isCollision() {
         return this.bullets.some(
             eachBullets =>
