@@ -22,11 +22,9 @@ class Enemy {
         this.bullets = [];
         this.player1 = undefined;
         this.laser = new Audio("sound_fx/PM_FSSF2_WEAPONS_H2_SHOT_324.mp3");
-
     }
 
     draw(framesCounter) {
-
         this.ctx.drawImage(
             this.image,
             this.image.framesIndex * Math.floor(this.image.width / this.image.frames), //Punto x donde empieza a recortar
@@ -37,7 +35,6 @@ class Enemy {
             this.posY,
             this.width,
             this.height,
-
         );
         this.animate(framesCounter);
         this.bullets.forEach(bullet => bullet.draw());
@@ -45,7 +42,6 @@ class Enemy {
     }
 
     animate(framesCounter) {
-
         if (framesCounter % 10 === 0) {
             this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
             if (this.posY === this.posY0) {
@@ -57,11 +53,8 @@ class Enemy {
             }
         }
         if (framesCounter % 50 === 0) {
-
             this.shoot()
-
         }
-
     }
 
     move() {

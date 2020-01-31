@@ -24,6 +24,7 @@ const alienHome = {
     lastBossPosX: 0,
     lastBossPosY: 0,
     score: undefined,
+    isRunning: false,
 
     // Tamaño del canvas.
     wSize: {
@@ -62,6 +63,7 @@ const alienHome = {
         this.ctx = this.canvasDom.getContext('2d')
         this.canvasDom.width = this.wSize.width
         this.canvasDom.height = this.wSize.height
+        this.isRunning = true
     },
 
     //-------------INICIAMOS EL JUEGO-------------//
@@ -147,8 +149,8 @@ const alienHome = {
         this.platform.draw();
         this.platforms.forEach(plat => plat.draw());
         this.player1.draw(this.framesCounter);
-        this.enemies.forEach(ene => ene.draw(this.framesCounter));
         this.bosses.forEach(boss => boss.draw(this.framesCounter));
+        this.enemies.forEach(ene => ene.draw(this.framesCounter));
         this.life.forEach(elm => elm.draw());
         if (this.isDeadBoss()) { this.explosion.draw(this.framesCounter, this.lastBossPosX, this.lastBossPosY) };
         this.drawScore();
