@@ -31,7 +31,7 @@ class Explosion {
     }
 
     animate(framesCounter) {
-        if (framesCounter % 30 === 0) {
+        if (framesCounter % 12 === 0) {
             this.image.framesIndex++; //Cambiamos el frame de la imagen cada 5 fps.
             if (this.image.framesIndex > 4) {
                 this.image.framesIndex = 0;

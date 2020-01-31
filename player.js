@@ -22,6 +22,7 @@ class Player {
         this.isOnPlatform = isOnPlatform;
 
         this.acids = [];
+        this.dieCutInitialPoint = 0;
 
         this.acidSpit = new Audio("sound_fx/zapsplat_human_spit_blow_water_spray_001_14769.mp3");
         this.jumpSound = new Audio("sound_fx/zapsplat_warfare_sword_swing_fast_whoosh_blade_ring_004_43813.mp3");
@@ -29,12 +30,17 @@ class Player {
         this.setListeners();
     }
 
-    draw(framesCounter) {
+    draw(framesCounter, isOnPlatform) {
+        if (this.posY < this.posY0 && !isOnPlatform) {
+            this.dieCutInitialPoint = 120
+        } else {
+            this.dieCutInitialPoint = 0
+        }
 
         this.ctx.drawImage(
             this.image,
             this.image.framesIndex * Math.floor(this.image.width / this.image.frames), //Punto x donde empieza a recortar
-            0, //Punto y donde empieza a recortar
+            this.dieCutInitialPoint,//Punto y donde empieza a recortar
             Math.floor(this.image.width / this.image.frames), //Punto x donde termina de recortar
             120,
             this.posX,

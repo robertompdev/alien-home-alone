@@ -98,7 +98,7 @@ const alienHome = {
             };
             if (this.player1.acids.length != 0 && this.bosses.length != 0) {
                 if (this.isDeadBoss()) {
-                    // this.explosion.draw(this.framesCounter, this.bosses[0].posX, this.bosses[0].posY)
+                    this.explosion.draw(this.framesCounter, this.lastBossPosX, this.lastBossPosY)
                     this.bosses.splice(0, 1)
                     this.player1.acids.splice(0, 1)
                     this.score += 200
@@ -148,11 +148,10 @@ const alienHome = {
         this.floor.draw();
         this.platform.draw();
         this.platforms.forEach(plat => plat.draw());
-        this.player1.draw(this.framesCounter);
+        this.player1.draw(this.framesCounter, this.isOnPlatform());
         this.bosses.forEach(boss => boss.draw(this.framesCounter));
         this.enemies.forEach(ene => ene.draw(this.framesCounter));
         this.life.forEach(elm => elm.draw());
-        if (this.isDeadBoss()) { this.explosion.draw(this.framesCounter, this.lastBossPosX, this.lastBossPosY) };
         this.drawScore();
     },
 
@@ -164,7 +163,6 @@ const alienHome = {
         this.background.move()
         this.floor.move()
         this.player1.animate()
-        this.explosion.animate(this.framesCounter)
         this.platforms.forEach(plat => plat.move());
     },
 
@@ -285,6 +283,7 @@ const alienHome = {
     isDeadBoss() {
         if (this.bosses.length != 0) {
             if (this.player1.acids.some(eachAcid => this.bosses[0].posX <= eachAcid.posX && this.bosses[0].posY <= eachAcid.posY)) {
+                this.explosion.draw(this.framesCounter)
                 this.metalImpactSound.play()
                 this.impactsOnBoss++
                 if (this.impactsOnBoss >= 3) {
